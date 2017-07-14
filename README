@@ -1,0 +1,11 @@
+# gsed-replace
+
+Replaces single-line string with multi-line string in a text file.
+
+## Usage
+
+```
+gsed-replace path/to/input.html "one line needle" path/to/replacement.js
+```
+
+Put your multiline text in `replacement.js`.

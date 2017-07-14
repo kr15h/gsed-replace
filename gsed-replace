@@ -1,0 +1,39 @@
+#!/bin/bash
+
+if [ -z "$1" ]
+  then
+    echo "Provide input file"
+    exit 1
+fi
+
+if [ -z "$2" ]
+  then
+    echo "Provide single line string to replace"
+    exit 1
+fi
+
+if [ -z "$3" ]
+  then
+    echo "Provide file with multiline replacement"
+    exit 1
+fi 
+
+FIND=$2
+
+# Prepare replacement, remove newlines, replace sed specific characters
+REPLACE=$(cat $3 | \
+	gsed ':a;N;$!ba;s/\n/__NEWLINE__/g' | \
+	gsed -r 's/\*/\\\*/g' | \
+	gsed -r 's/\./\\\./g' | \
+	gsed -r 's/\[/\\\[/g' | \
+	gsed -r 's/\]/\\\]/g' | \
+	gsed -r 's/\(/\\\(/g' | \
+	gsed -r 's/\)/\\\)/g' | \
+	gsed -r 's/\^/\\\^/g' | \
+	gsed -r 's/\$/\\\$/g' | \
+	gsed -r 's/\|/\\\|/g' | \
+	gsed -r 's/\&/\\\&/g' | \
+	gsed -r 's/@/\\@/g' | \
+	gsed -r "s/\+/\\\+/g")
+
+gsed -r "s@$FIND@$REPLACE@g" "$1" | gsed -r "s/__NEWLINE__/\n/g"
